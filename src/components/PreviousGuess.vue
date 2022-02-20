@@ -19,7 +19,7 @@ export default {
   name: "PreviousGuess",
   props: {
     answer: Array,
-    guess: String,
+    guess: Array,
   },
   components: {
     Letter,
