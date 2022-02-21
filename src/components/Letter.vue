@@ -12,12 +12,16 @@ export default {
     answerArray: Array,
     answerLetter: String,
     guessLetter: String,
+    showResult: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     letterClasses() {
       return {
-        yellow: this.answerArray.includes(this.guessLetter),
-        green: this.answerLetter === this.guessLetter,
+        yellow: this.showResult && this.answerArray.includes(this.guessLetter),
+        green: this.showResult && this.answerLetter === this.guessLetter,
       }
     },
   },
@@ -27,6 +31,8 @@ export default {
 <style>
 .letter {
   align-items: center;
+  border: 2px solid #d3d6da;
+  box-sizing: border-box;
   display: inline-flex;
   font-size: 24px;
   font-weight: 700;
@@ -37,10 +43,14 @@ export default {
 }
 
 .yellow {
-  background-color: yellow;
+  border-width: 0;
+  background-color: #c9b458;
+  color: #FFFFFF;
 }
 .green {
-  background-color: green;
+  border-width: 0;
+  background-color: #6aaa64;
+  color: #FFFFFF;
 }
 
 </style>

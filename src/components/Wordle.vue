@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h1>Your Wordle:</h1>
     <div v-if="solved">
       <h2>Correct! The answer was <strong>{{ answer }}</strong>!</h2>
     </div>
@@ -12,9 +11,8 @@
           :answer="answerLetterArray"
           :guess="guess">
         </previous-guess>
+        <current-guess :guess="currentGuess"></current-guess>
       </div>
-      <h3>{{ currentGuess }}</h3>
-
       <div class="guess__input">
         <form name="guess" @submit.prevent="submitAnswer">
           <!-- <input ref="guessInput" v-model="currentGuess" type="text" maxLength="5"> -->
@@ -26,12 +24,15 @@
 </template>
 
 <script>
+import '../utils.js'
 import randomWord from 'random-word-by-length';
+import CurrentGuess from './CurrentGuess.vue';
 import PreviousGuess from './PreviousGuess.vue';
 
 export default {
   name: 'Wordle',
   components: {
+    CurrentGuess,
     PreviousGuess,
   },
   created() {
@@ -43,9 +44,11 @@ export default {
   },
   data() {
     return {
-      "currentGuessArray": [],
-      "previousGuesses": [],
+      "currentGuess": [],
+      "currentAttempt": 1,
+      "previousGuesses": [[],[],[],[],[],[]],
       "solved": false,
+      "gameover": false,
     }
   },
   computed: {
@@ -60,36 +63,61 @@ export default {
     answerLetterArray() {
       return this.answer.split('');
     },
-    currentGuess() {
-      return this.currentGuessArray.join('');
+    currentGuessString() {
+      return this.currentGuess.join('');
     },
-    guessLetterArray() {
-      return this.currentGuess.split('');
+    gameDisabled() {
+      return this.gameover || this.solved
+    },
+    guessIsDuplicate() {
+      console.log(this.previousGuesses)
+      console.log(this.currentGuess)
+
+
+      for (let i; i < this.previousGuesses.length; i++) {
+        if (JSON.stringify(this.currentGuess) === JSON.stringify(this.previousGuesses[i])) {
+          console.log(JSON.stringify(this.currentGuess));
+          console.log(JSON.stringify(this.previousGuesses[i]));
+          return true
+        }
+      }
+      return false
     },
   },
   methods: {
     onKeyPress(key) {
-      if (key === "Enter") {
-        this.submitAnswer();
-      }
+      if (!this.gamover) {
+        if (key === "Enter") {
+          this.submitAnswer();
+        }
 
-      if (key === "Backspace") {
-        this.currentGuessArray.pop();
-      }
+        if (key === "Backspace") {
+          this.currentGuess.pop();
+        }
 
-      if (key.length === 1 && this.currentGuessArray.length < 5) {
-        this.currentGuessArray.push(key);
+        if (key.length === 1 && this.currentGuess.length < 5) {
+          this.currentGuess.push(key);
+        }
       }
     },
     submitAnswer() {
-      if (this.guessLetterArray.length === 5 && !this.guessLetterArray.contains(this.currentGuess)) {
-        this.previousGuesses.push(this.guessLetterArray);
-        this.currentGuessArray = [];
 
-        if (this.currentGuess === this.answer) {
+      if (this.currentGuess.length === 5 && !this.previousGuesses.includes(this.currentGuess)) {
+        this.previousGuesses[this.currentAttempt - 1] = (this.currentGuess);
+        this.currentGuess = [];
+
+        if (this.currentGuessString === this.answer) {
           this.solved = true;
         }
+
+        if (this.currentAttempt < 6) {
+          this.currentAttempt ++;
+        } else {
+          this.gameover = true;
+        }
+
       } else {
+        // Show Error
         return false
       }
     },
@@ -99,18 +127,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.previous-guesses {
+  display: grid;
+  gap: 5px;
 }
 </style>

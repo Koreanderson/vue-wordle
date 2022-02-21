@@ -4,9 +4,6 @@
     :key="index" 
     v-for="(letter, index) in guess"
     :guess-letter="letter"
-    :answer-letter="answer[index]"
-    :answer-array="answer"
-    :showResult="true"
     v-text="letter">
   </letter>
 </div>
@@ -17,9 +14,8 @@
 import Letter from './Letter.vue';
 
 export default {
-  name: "PreviousGuess",
+  name: "CurrentGuess",
   props: {
-    answer: Array,
     guess: Array,
   },
   components: {
