@@ -1,16 +1,15 @@
 <template>
 <div class="guess-row">
   <letter
-    :key="index" 
-    v-for="(letter, index) in guess"
-    :guess-letter="letter"
-    :answer-letter="answer[index]"
+    :key="index - 1" 
+    v-for="index in 5"
+    :guess-letter="guess[index-1]"
+    :answer-letter="answer[index - 1]"
     :answer-array="answer"
     :showResult="true"
-    v-text="letter">
+    v-text="guess[index-1]">
   </letter>
 </div>
-  
 </template>
 
 <script>
