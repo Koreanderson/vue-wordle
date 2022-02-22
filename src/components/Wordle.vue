@@ -5,13 +5,14 @@
     </div>
     <div class="guess__container">
       <div class="previous-guesses">
-        <previous-guess
+        <entry
           :key="index"
           v-for="(guess, index) in previousGuesses"
+          :active="index === currentAttempt - 1"
           :answer="answerLetterArray"
-          :guess="guess">
-        </previous-guess>
-        <current-guess :guess="currentGuess"></current-guess>
+          :validated="index !== currentAttempt - 1"
+          :guess="index === currentAttempt - 1 ? currentGuess : guess">
+        </entry>
       </div>
       <div class="guess__input">
         <form name="guess" @submit.prevent="submitAnswer">
@@ -26,14 +27,15 @@
 <script>
 import '../utils.js'
 import randomWord from 'random-word-by-length';
-import CurrentGuess from './CurrentGuess.vue';
-import PreviousGuess from './PreviousGuess.vue';
+import Entry from './Entry.vue';
 
 export default {
   name: 'Wordle',
+  props: {
+    enableDuplicateGuesses: Boolean,
+  },
   components: {
-    CurrentGuess,
-    PreviousGuess,
+    Entry,
   },
   created() {
     window.addEventListener('keydown', (e) => {
@@ -70,17 +72,12 @@ export default {
       return this.gameover || this.solved
     },
     guessIsDuplicate() {
-      console.log(this.previousGuesses)
-      console.log(this.currentGuess)
-
-
-      for (let i; i < this.previousGuesses.length; i++) {
-        if (JSON.stringify(this.currentGuess) === JSON.stringify(this.previousGuesses[i])) {
-          console.log(JSON.stringify(this.currentGuess));
-          console.log(JSON.stringify(this.previousGuesses[i]));
+      for (const guess of this.previousGuesses) {
+        if (this.currentGuess.join('') === guess.join('')) {
           return true
         }
       }
+
       return false
     },
   },
@@ -101,12 +98,15 @@ export default {
       }
     },
     submitAnswer() {
+      if (this.enableDuplicateGuesses && this.guessIsDuplicate) {
+        return false
+      }
 
       if (this.currentGuess.length === 5 && !this.previousGuesses.includes(this.currentGuess)) {
         this.previousGuesses[this.currentAttempt - 1] = (this.currentGuess);
         this.currentGuess = [];
 
-        if (this.currentGuessString === this.answer) {
+        if (this.currentGuess === this.answer) {
           this.solved = true;
         }
 

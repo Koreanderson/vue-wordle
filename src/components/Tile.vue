@@ -1,5 +1,5 @@
 <template>
-<span class="letter" :class="letterClasses">
+<span class="tile" :class="letterClasses">
   {{ answerLetter }}
 </span>
   
@@ -7,12 +7,12 @@
 
 <script>
 export default {
-  name: "Letter",
+  name: "Tile",
   props: {
     answerArray: Array,
     answerLetter: String,
     guessLetter: String,
-    showResult: {
+    validated: {
       type: Boolean,
       default: false,
     },
@@ -20,8 +20,8 @@ export default {
   computed: {
     letterClasses() {
       return {
-        yellow: this.showResult && this.answerArray.includes(this.guessLetter),
-        green: this.showResult && this.answerLetter === this.guessLetter,
+        yellow: this.validated && this.answerArray.includes(this.guessLetter),
+        green: this.validated && this.answerLetter === this.guessLetter,
       }
     },
   },
@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style>
-.letter {
+.tile {
   align-items: center;
   border: 2px solid #d3d6da;
   box-sizing: border-box;
