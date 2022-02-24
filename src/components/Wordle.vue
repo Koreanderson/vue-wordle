@@ -20,6 +20,11 @@
           <button type="submit">Submit</button>
         </form>
       </div>
+      <keyboard
+        :answer-array="answerLetterArray"
+        :previous-guesses="previousGuesses"
+        @submit="submitAnswer"
+      ></keyboard>
     </div>
   </div>
 </template>
@@ -27,7 +32,9 @@
 <script>
 import '../utils.js'
 import randomWord from 'random-word-by-length';
+
 import Entry from './Entry.vue';
+import Keyboard from './Keyboard.vue';
 
 export default {
   name: 'Wordle',
@@ -36,6 +43,7 @@ export default {
   },
   components: {
     Entry,
+    Keyboard,
   },
   created() {
     window.addEventListener('keydown', (e) => {
