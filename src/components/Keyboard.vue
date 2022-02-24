@@ -5,6 +5,7 @@
         v-for="letter in firstRowLetters"
         :key="letter"
         :letter="letter"
+        @keydown="onKeydown(letter)"
       ></letter>
     </div>
     <div class="row">
@@ -12,6 +13,7 @@
         v-for="letter in secondRowLetters"
         :key="letter"
         :letter="letter"
+        @keydown="onKeydown(letter)"
       ></letter>
     </div>
     <div class="row">
@@ -20,8 +22,9 @@
         v-for="letter in thirdRowLetters"
         :key="letter"
         :letter="letter"
+        @keydown="onKeydown(letter)"
       ></letter>
-      <button class="key">Delete</button>
+      <button class="key" @click="onKeydown('Backspace')">Delete</button>
     </div>
   </div>
 </template>
@@ -49,7 +52,12 @@ export default {
       thirdRowLetters: ["z","x","c","v","b","n","m"],
     }
   },
-  computed: {},
+  methods: {
+    onKeydown(letter) {
+      window.dispatchEvent(new KeyboardEvent('keydown', {'key': letter}));
+      console.log(letter);
+    },
+  },
 }
 </script>
 
@@ -95,4 +103,11 @@ export default {
     height: 50px;
     text-transform: uppercase;
   }
+
+  .row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
 </style>

@@ -3,8 +3,8 @@
     <div v-if="solved">
       <h2>Correct! The answer was <strong>{{ answer }}</strong>!</h2>
     </div>
-    <div class="guess__container">
-      <div class="previous-guesses">
+    <div class="container">
+      <div class="bean-board">
         <entry
           :key="index"
           v-for="(guess, index) in previousGuesses"
@@ -14,16 +14,11 @@
           :guess="index === currentAttempt - 1 ? currentGuess : guess">
         </entry>
       </div>
-      <div class="guess__input">
-        <form name="guess" @submit.prevent="submitAnswer">
-          <!-- <input ref="guessInput" v-model="currentGuess" type="text" maxLength="5"> -->
-          <button type="submit">Submit</button>
-        </form>
-      </div>
       <keyboard
         :answer-array="answerLetterArray"
         :previous-guesses="previousGuesses"
         @submit="submitAnswer"
+        @keypress="onKeyPress(key)"
       ></keyboard>
     </div>
   </div>
@@ -135,8 +130,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.previous-guesses {
+.bean-board {
   display: grid;
   gap: 5px;
+  margin: 10px 0;
 }
 </style>

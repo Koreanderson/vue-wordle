@@ -2,7 +2,7 @@
 <button 
   class="letter" 
   :class="letterClasses"
-  @click="handlePress"
+  @click="handleKeydown(letter)"
 >
   {{ letter }}
 </button>
@@ -25,8 +25,8 @@ export default {
     },
   },
   methods: {
-    handlePress() {
-
+    handleKeydown(letter) {
+      this.$emit('keydown', letter);
     },
   }
 }
